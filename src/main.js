@@ -1,10 +1,7 @@
 import { createSSRApp } from "vue";
+import App from "./App.vue";
 
 export function createApp() {
-    const app = createSSRApp({
-        data: () => ({ count: 1 }),
-        template: `<button @click="count++">{{ count }}</button>`,
-    });
-
+    const app = createSSRApp(App);
     return { app };
 }

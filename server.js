@@ -19,7 +19,12 @@ async function formHtml(req, res, next) {
         let template = fs.readFileSync(resolve("index.html"), "utf-8");
         template = await vite.transformIndexHtml(url, template);
 
-        res.status(200).set({ "Content-Type": "text/html" }).end(template);
+        const { render } = await vite.ssrLoadModule("/src/enrty-server.js");
+
+        const [html] = await render();
+        const html2 = template.replace("<!--app-html-->", html);
+
+        res.status(200).set({ "Content-Type": "text/html" }).end(html2);
     } catch (e) {
         vite.ssrFixStacktrace(e);
         next(e);

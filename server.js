@@ -19,7 +19,7 @@ async function formHtml(req, res, next) {
         let template = fs.readFileSync(resolve("index.html"), "utf-8");
         template = await vite.transformIndexHtml(url, template);
 
-        const { render } = await vite.ssrLoadModule("/src/enrty-server.js");
+        const { render } = await vite.ssrLoadModule("/src/entry-server.js");
 
         const [html] = await render();
         const html2 = template.replace("<!--app-html-->", html);

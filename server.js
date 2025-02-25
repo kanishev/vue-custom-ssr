@@ -7,36 +7,69 @@ import { createServer as createViteServer } from "vite";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const resolve = (p) => path.resolve(__dirname, p);
 
-const vite = await createViteServer({
-    server: { middlewareMode: true },
-    appType: "custom",
-}); // should be placed in createServer fn?
+const isProd = process.env.NODE_ENV === "production";
 
-async function formHtml(req, res, next) {
-    const url = req.originalUrl;
-
-    try {
-        let template = fs.readFileSync(resolve("index.html"), "utf-8");
-        template = await vite.transformIndexHtml(url, template);
-
-        const { render } = await vite.ssrLoadModule("/src/entry-server.js");
-
-        const [html] = await render();
-        const html2 = template.replace("<!--app-html-->", html);
-
-        res.status(200).set({ "Content-Type": "text/html" }).end(html2);
-    } catch (e) {
-        vite.ssrFixStacktrace(e);
-        next(e);
-    }
-}
+const manifest = isProd
+    ? JSON.parse(
+          fs.readFileSync(
+              resolve("dist/client/.vite/ssr-manifest.json"),
+              "utf-8"
+          )
+      )
+    : {};
 
 async function createServer() {
     const app = express();
 
-    app.use(vite.middlewares); // what is it?
+    let vite;
+
+    if (!isProd) {
+        vite = await createViteServer({
+            server: { middlewareMode: true },
+            appType: "custom",
+        });
+
+        app.use(vite.middlewares);
+    } else {
+        app.use(
+            (await import("serve-static")).default(resolve("dist/client"), {
+                index: false,
+            })
+        );
+    }
 
     app.use("*", formHtml);
+
+    async function formHtml(req, res, next) {
+        const url = req.originalUrl;
+
+        try {
+            let template, render;
+
+            if (!isProd) {
+                template = fs.readFileSync(resolve("index.html"), "utf-8");
+                template = await vite.transformIndexHtml(url, template);
+                render = (await vite.ssrLoadModule("/src/entry-server.js"))
+                    .render;
+            } else {
+                template = fs.readFileSync(
+                    resolve("dist/client/index.html"),
+                    "utf-8"
+                );
+                render = (await import("./dist/server/entry-server.js")).render;
+            }
+
+            const [html] = await render(url, manifest);
+            const renderHtml = template.replace("<!--app-html-->", html);
+
+            res.status(200)
+                .set({ "Content-Type": "text/html" })
+                .end(renderHtml);
+        } catch (e) {
+            vite && vite.ssrFixStacktrace(e);
+            res.status(500).end(e.stack);
+        }
+    }
 
     app.listen(3000, () => {
         console.log("ready");

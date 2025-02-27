@@ -1,6 +1,9 @@
 import { createApp } from "./main.js";
+import "./style.css";
 
-const { app } = createApp();
-app.mount("#app");
+const { app, router } = createApp();
 
-console.log("hydrated");
+router.isReady().then(() => {
+    app.mount("#app");
+    console.log("hydrated");
+});

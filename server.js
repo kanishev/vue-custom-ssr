@@ -59,8 +59,11 @@ async function createServer() {
                 render = (await import("./dist/server/entry-server.js")).render;
             }
 
-            const [html] = await render(url, manifest);
-            const renderHtml = template.replace("<!--app-html-->", html);
+            const [html, preloadLinks] = await render(url, manifest);
+
+            const renderHtml = template
+                .replace(`<!--preload-links-->`, preloadLinks)
+                .replace("<!--app-html-->", html);
 
             res.status(200)
                 .set({ "Content-Type": "text/html" })
@@ -72,7 +75,7 @@ async function createServer() {
     }
 
     app.listen(3000, () => {
-        console.log("ready");
+        console.log(`ready ${process.env.NODE_ENV} on 3000 port`);
     });
 }
 

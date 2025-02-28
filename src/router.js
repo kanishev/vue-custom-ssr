@@ -3,8 +3,6 @@ import {
     createMemoryHistory,
     createWebHistory,
 } from "vue-router";
-import Home from "./pages/Home.vue";
-import About from "./pages/About.vue";
 
 export function createAppRouter() {
     return createRouter({
@@ -12,8 +10,8 @@ export function createAppRouter() {
             ? createMemoryHistory()
             : createWebHistory(),
         routes: [
-            { path: "/", component: Home },
-            { path: "/about", component: About },
+            { path: "/", component: import("./pages/Home.vue") },
+            { path: "/about", component: import("./pages/About.vue") },
         ],
     });
 }

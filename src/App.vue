@@ -13,10 +13,16 @@
     </div>
 
     <button class="btn inter" @click="counter++">Counter: {{ counter }}</button>
+
+    <h2>Store info: {{ counterStore.counter }}</h2>
+    <button @click="counterStore.increment">store increment</button>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import { useCounterStore } from "./stores/counterStore";
+
+const counterStore = useCounterStore();
 
 const counter = ref(0);
 </script>

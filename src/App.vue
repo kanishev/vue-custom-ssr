@@ -16,11 +16,14 @@
 
     <h2>Store info: {{ counterStore.counter }}</h2>
     <button @click="counterStore.increment">store increment</button>
+
+    <JSX />
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { useCounterStore } from "./stores/counterStore";
+import { JSX } from "./components/Jsx";
 
 const counterStore = useCounterStore();
 

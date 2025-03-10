@@ -47,15 +47,20 @@ async function createServer() {
             let template, render;
 
             if (!isProd) {
-                template = fs.readFileSync(resolve("index.html"), "utf-8");
+                template = fs.readFileSync(
+                    resolve("../public/index.html"),
+                    "utf-8"
+                );
                 template = await vite.transformIndexHtml(url, template);
-                render = (await vite.ssrLoadModule("/entry-server.js")).render;
+                render = (await vite.ssrLoadModule("server/entry-server.js"))
+                    .render;
             } else {
                 template = fs.readFileSync(
                     resolve("dist/client/index.html"),
                     "utf-8"
                 );
-                render = (await import("./dist/server/entry-server.js")).render;
+                render = (await import("../dist/server/entry-server.js"))
+                    .render;
             }
 
             const [html, preloadLinks] = await render(url, manifest);

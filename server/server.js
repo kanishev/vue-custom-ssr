@@ -32,7 +32,7 @@ async function createServer() {
         app.use(vite.middlewares);
     } else {
         app.use(
-            (await import("serve-static")).default(resolve("dist/client"), {
+            (await import("serve-static")).default(resolve("../dist/client"), {
                 index: false,
             })
         );
@@ -47,10 +47,7 @@ async function createServer() {
             let template, render;
 
             if (!isProd) {
-                template = fs.readFileSync(
-                    resolve("../public/index.html"),
-                    "utf-8"
-                );
+                template = fs.readFileSync(resolve("../index.html"), "utf-8");
                 template = await vite.transformIndexHtml(url, template);
                 render = (await vite.ssrLoadModule("server/entry-server.js"))
                     .render;

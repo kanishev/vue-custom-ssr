@@ -12,7 +12,7 @@ const isProd = process.env.NODE_ENV === "production";
 const manifest = isProd
     ? JSON.parse(
           fs.readFileSync(
-              resolve("dist/client/.vite/ssr-manifest.json"),
+              resolve("../dist/client/.vite/ssr-manifest.json"),
               "utf-8"
           )
       )
@@ -56,7 +56,7 @@ async function createServer() {
                     .render;
             } else {
                 template = fs.readFileSync(
-                    resolve("dist/client/index.html"),
+                    resolve("../dist/client/index.html"),
                     "utf-8"
                 );
                 render = (await import("../dist/server/entry-server.js"))

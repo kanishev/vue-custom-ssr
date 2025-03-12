@@ -1,6 +1,6 @@
 import { basename } from "node:path";
 import { renderToString } from "vue/server-renderer";
-import { createApp } from "../main.js";
+import { createApp } from "./main.js";
 
 export async function render(url, manifest) {
     const { app, router } = createApp();
@@ -20,6 +20,7 @@ function renderPreloadLinks(modules, manifest) {
     const seen = new Set();
 
     modules.forEach((id) => {
+        console.log("module", id);
         const files = manifest[id];
         if (files) {
             files.forEach((file) => {
@@ -38,6 +39,7 @@ function renderPreloadLinks(modules, manifest) {
         }
     });
 
+    console.log("links", links);
     return links;
 }
 

@@ -7,26 +7,32 @@
         </Suspense>
     </router-view>
 
-    <div class="router-links">
-        <router-link to="/">Home</router-link>
-        <router-link to="/about">About</router-link>
-    </div>
+    <template v-if="false">
+        <div class="router-links">
+            <router-link to="/">Home</router-link>
+            <router-link to="/about">About</router-link>
+        </div>
 
-    <button class="btn inter" @click="counter++">Counter: {{ counter }}</button>
+        <button class="btn inter" @click="counter++">
+            Counter: {{ counter }}
+        </button>
 
-    <h2>Store info: {{ counterStore.counter }}</h2>
-    <button @click="counterStore.increment">store increment</button>
+        <h2>Store info: {{ counterStore.counter }}</h2>
+        <button @click="counterStore.increment">store increment</button>
 
-    <JSX />
+        <JSX />
+    </template>
+
+    <Mismatch />
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { useCounterStore } from "./stores/counterStore";
 import { JSX } from "./components/Jsx";
+import Mismatch from "./components/Mismatch.vue";
 
 const counterStore = useCounterStore();
-
 const counter = ref(0);
 </script>
 

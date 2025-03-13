@@ -23,7 +23,7 @@
         <JSX />
     </template>
 
-    <Mismatch />
+    <Mismatch v-if="false" />
 </template>
 
 <script setup>

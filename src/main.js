@@ -11,5 +11,5 @@ export function createApp() {
     app.use(pinia);
     app.use(router);
 
-    return { app, router };
+    return { app, router, pinia };
 }

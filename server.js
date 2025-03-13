@@ -59,11 +59,18 @@ async function createServer() {
                 render = (await import("./dist/server/entry-server.js")).render;
             }
 
-            const [html, preloadLinks] = await render(url, manifest);
+            const { html, preloadLinks, initialState } = await render(
+                url,
+                manifest
+            );
 
             const renderHtml = template
                 .replace(`<!--preload-links-->`, preloadLinks)
-                .replace("<!--app-html-->", html);
+                .replace("<!--app-html-->", html)
+                .replace(
+                    "window.__pinia = {};",
+                    `window.__pinia = ${initialState};`
+                );
 
             res.status(200)
                 .set({ "Content-Type": "text/html" })

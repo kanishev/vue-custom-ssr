@@ -8,8 +8,18 @@ export const useCounterStore = defineStore("counterStore", () => {
         counter.value = counter.value + 1;
     }
 
+    async function loadTest() {
+        return fetch("https://jsonplaceholder.typicode.com/todos")
+            .then((response) => response.json())
+            .then((json) => {
+                console.log("load test", json.length);
+                counter.value = json.length;
+            });
+    }
+
     return {
         counter,
+        loadTest,
         increment,
     };
 });

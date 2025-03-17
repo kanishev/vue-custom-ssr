@@ -9,7 +9,7 @@ import { useCounterStore } from "../stores/counterStore";
 
 export default defineComponent({
     asyncData: ({ pinia }) => {
-        useCounterStore(pinia).increment();
+        useCounterStore(pinia).loadTest();
     },
     setup() {
         const counterStore = useCounterStore();

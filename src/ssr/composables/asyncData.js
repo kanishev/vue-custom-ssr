@@ -1,4 +1,4 @@
-import { getCurrentInstance, ref } from "vue";
+import { getCurrentInstance, ref, onServerPrefetch } from "vue";
 
 export const useAsyncData = async (key, handler, options = {}) => {
     const asyncData = {
@@ -23,5 +23,14 @@ export const useAsyncData = async (key, handler, options = {}) => {
 
     const initialFetch = () => asyncData.refresh();
 
-    return Promise.resolve(initialFetch()).then(() => asyncData);
+    if (import.meta.env.SSR) {
+        const promise = initialFetch();
+        if (getCurrentInstance()) {
+            onServerPrefetch(() => promise);
+        } else {
+            await promise;
+        }
+    }
+
+    return initialFetch().then(() => asyncData);
 };

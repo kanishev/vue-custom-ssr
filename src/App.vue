@@ -1,11 +1,13 @@
 <template>
-    <router-view v-slot="{ Component }">
+    <!-- <router-view v-slot="{ Component }">
         <Suspense>
             <div>
                 <component :is="Component" />
             </div>
         </Suspense>
-    </router-view>
+    </router-view> -->
+
+    LIST: {{ data }}
 
     <template v-if="false">
         <div class="router-links">
@@ -19,21 +21,26 @@
 
         <h2>Store info: {{ counterStore.counter }}</h2>
         <button @click="counterStore.increment">store increment</button>
-
-        <JSX />
     </template>
 
     <Mismatch v-if="false" />
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useCounterStore } from "./stores/counterStore";
-import { JSX } from "./components/Jsx";
+import { useAsyncData } from "./ssr/composables/asyncData";
 import Mismatch from "./components/Mismatch.vue";
 
-const counterStore = useCounterStore();
-const counter = ref(0);
+console.log("APP COMPONENT");
+
+const { data } = await useAsyncData("test", () => {
+    return fetch("https://jsonplaceholder.typicode.com/todos/1")
+        .then((response) => response.json())
+        .then((json) => {
+            console.log("FETCH RECEIVED");
+            return json;
+        });
+});
+console.log(data);
 </script>
 
 <style>

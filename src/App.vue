@@ -7,7 +7,7 @@
         </Suspense>
     </router-view> -->
 
-    LIST: {{ data }}
+    LIST: {{ res }}
 
     <template v-if="false">
         <div class="router-links">
@@ -29,10 +29,10 @@
 <script setup>
 import { useAsyncData } from "./ssr/composables/asyncData";
 import Mismatch from "./components/Mismatch.vue";
+import { ref } from "vue";
+const res = ref();
 
-console.log("APP COMPONENT");
-
-const { data } = await useAsyncData("test", () => {
+const { data } = useAsyncData("test", () => {
     return fetch("https://jsonplaceholder.typicode.com/todos/1")
         .then((response) => response.json())
         .then((json) => {
@@ -40,7 +40,8 @@ const { data } = await useAsyncData("test", () => {
             return json;
         });
 });
-console.log(data);
+
+res.value = data;
 </script>
 
 <style>

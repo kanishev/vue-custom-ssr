@@ -5,8 +5,11 @@ export const useAsyncData = async (key, handler, options = {}) => {
         data: ref({}),
     };
 
+    let prom;
+    const instance = getCurrentInstance();
+
     asyncData.refresh = () => {
-        return new Promise((resolve, reject) => {
+        const promise = new Promise((resolve, reject) => {
             try {
                 resolve(handler());
             } catch (error) {
@@ -14,23 +17,30 @@ export const useAsyncData = async (key, handler, options = {}) => {
             }
         })
             .then((result) => {
+                console.log("res", result);
                 asyncData.data.value = result;
             })
             .catch(() => {
                 asyncData.data.value = false;
             });
+
+        prom = promise;
+        return promise;
     };
 
     const initialFetch = () => asyncData.refresh();
 
     if (import.meta.env.SSR) {
         const promise = initialFetch();
-        if (getCurrentInstance()) {
+        if (instance) {
             onServerPrefetch(() => promise);
         } else {
             await promise;
         }
+    } else {
+        // TODO: add fetchOnServer handler
+        initialFetch();
     }
 
-    return initialFetch().then(() => asyncData);
+    return Promise.resolve(prom).then(() => asyncData);
 };

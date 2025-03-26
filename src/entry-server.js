@@ -20,10 +20,11 @@ export async function render(url, manifest) {
     const components = getMatchedComponents(router.currentRoute.value.matched);
     await callAsyncData(components, context);
 
-    const initialState = JSON.stringify(pinia.state.value);
-
     const ctx = {};
     const html = await renderToString(app, ctx);
+
+    // get initial state from app context after data loaded on server side
+    const initialState = JSON.stringify(app.config.initialState);
 
     const preloadLinks = renderPreloadLinks(ctx.modules, manifest);
 

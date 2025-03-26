@@ -1,15 +1,18 @@
-import { getCurrentInstance, ref, onServerPrefetch } from "vue";
+import { ref, onServerPrefetch } from "vue";
+import { getAppInstance } from "../utils";
 
 export const useAsyncData = async (key, handler, options = {}) => {
     const asyncData = {
-        data: ref({}),
+        data: ref({
+            defailt: "defaultData",
+        }),
     };
 
-    let prom;
-    const instance = getCurrentInstance();
+    let promise;
+    const instance = getAppInstance();
 
     asyncData.refresh = () => {
-        const promise = new Promise((resolve, reject) => {
+        const p = new Promise((resolve, reject) => {
             try {
                 resolve(handler());
             } catch (error) {
@@ -17,14 +20,14 @@ export const useAsyncData = async (key, handler, options = {}) => {
             }
         })
             .then((result) => {
-                console.log("res", result);
                 asyncData.data.value = result;
+                instance.config.initialState = result;
             })
             .catch(() => {
                 asyncData.data.value = false;
             });
 
-        prom = promise;
+        promise = p;
         return promise;
     };
 
@@ -37,10 +40,7 @@ export const useAsyncData = async (key, handler, options = {}) => {
         } else {
             await promise;
         }
-    } else {
-        // TODO: add fetchOnServer handler
-        initialFetch();
     }
 
-    return Promise.resolve(prom).then(() => asyncData);
+    return Promise.resolve(promise).then(() => ({ data: asyncData }));
 };

@@ -1,14 +1,30 @@
 <template>
-    <p class="par">About Page</p>
-    <about-button />
+    <p class="par">Hello Page</p>
+    <p>Async data {{ counter }}</p>
 </template>
 
-<script setup>
-import AboutButton from "../components/About/AboutButton.vue";
+<script lang="ts">
+import { computed, defineComponent } from "vue";
+import { useCounterStore } from "../stores/counterStore";
+
+export default defineComponent({
+    asyncData: ({ pinia }) => {
+        useCounterStore(pinia).loadTest();
+    },
+    setup() {
+        const counterStore = useCounterStore();
+        const counter = computed(() => counterStore.counter);
+
+        console.log("counter", counter.value);
+        return {
+            counter,
+        };
+    },
+});
 </script>
 
 <style scoped>
 .par {
-    color: red;
+    color: blueviolet;
 }
 </style>

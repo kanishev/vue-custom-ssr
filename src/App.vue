@@ -1,14 +1,4 @@
 <template>
-    <!-- <router-view v-slot="{ Component }">
-        <Suspense>
-            <div>
-                <component :is="Component" />
-            </div>
-        </Suspense>
-    </router-view> -->
-
-    LIST: {{ res }}
-
     <template v-if="false">
         <div class="router-links">
             <router-link to="/">Home</router-link>
@@ -23,26 +13,14 @@
         <button @click="counterStore.increment">store increment</button>
     </template>
 
-    <Mismatch v-if="false" />
+    <RouterView v-slot="{ Component }">
+        <Suspense>
+            <component :is="Component" />
+        </Suspense>
+    </RouterView>
 </template>
 
-<script setup>
-import { useAsyncData } from "./ssr/composables/asyncData";
-import Mismatch from "./components/Mismatch.vue";
-import { ref } from "vue";
-const res = ref();
-
-const { data } = useAsyncData("test", () => {
-    return fetch("https://jsonplaceholder.typicode.com/todos/1")
-        .then((response) => response.json())
-        .then((json) => {
-            console.log("FETCH RECEIVED");
-            return json;
-        });
-});
-
-res.value = data;
-</script>
+<script setup></script>
 
 <style>
 @font-face {

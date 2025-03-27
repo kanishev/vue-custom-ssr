@@ -68,8 +68,8 @@ async function createServer() {
                 .replace(`<!--preload-links-->`, preloadLinks)
                 .replace("<!--app-html-->", html)
                 .replace(
-                    "window.__pinia = {};",
-                    `window.__pinia = ${initialState};`
+                    "window.__initialState__ = {};",
+                    `window.__initialState__ = ${initialState};`
                 );
 
             res.status(200)
@@ -81,8 +81,8 @@ async function createServer() {
         }
     }
 
-    app.listen(3000, () => {
-        console.log(`ready ${process.env.NODE_ENV} on 3000 port`);
+    app.listen(3030, () => {
+        console.log(`ready ${process.env.NODE_ENV} on 3030 port`);
     });
 }
 

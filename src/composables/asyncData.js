@@ -1,15 +1,18 @@
 import { ref, onServerPrefetch } from "vue";
-import { getAppInstance } from "../utils";
+import { getAppInstance } from "../utils/appInstance";
 
 export const useAsyncData = async (key, handler, options = {}) => {
     const asyncData = {
-        data: ref({
-            defailt: "defaultData",
-        }),
+        data: ref(null),
     };
 
     let promise;
     const instance = getAppInstance();
+    const initialState = instance.config.initialState;
+
+    if (initialState) {
+        asyncData.data.value = initialState;
+    }
 
     asyncData.refresh = () => {
         const p = new Promise((resolve, reject) => {
@@ -20,8 +23,8 @@ export const useAsyncData = async (key, handler, options = {}) => {
             }
         })
             .then((result) => {
-                asyncData.data.value = result;
-                instance.config.initialState = result;
+                asyncData.data.value = Math.random();
+                instance.config.initialState = asyncData.data.value;
             })
             .catch(() => {
                 asyncData.data.value = false;
@@ -42,5 +45,8 @@ export const useAsyncData = async (key, handler, options = {}) => {
         }
     }
 
-    return Promise.resolve(promise).then(() => ({ data: asyncData }));
+    // TODO: add chaching
+    // TODO: add server=false option
+
+    return Promise.resolve(promise).then(() => asyncData);
 };

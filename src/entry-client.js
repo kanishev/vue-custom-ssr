@@ -1,13 +1,13 @@
 import { createApp } from "./main.js";
+import { getContext } from "./utils/context.js";
 import "./style.css";
 
-const { app, router, pinia } = createApp();
+const { app, router } = createApp();
 
-router.isReady().then(() => {
-    if (window.__pinia) {
-        pinia.state.value = window.__pinia;
-    }
+const context = getContext();
+app.config.initialState = context.initialState;
 
-    app.mount("#app");
-    console.log("hydrated");
-});
+await router.isReady();
+
+app.mount("#app");
+console.log("hydrated");

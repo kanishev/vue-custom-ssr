@@ -1,26 +1,29 @@
 <template>
     <p class="par">Hello Page</p>
-    <p>Async data {{ counter }}</p>
+    <p>RES {{ res }}</p>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from "vue";
-import { useCounterStore } from "../stores/counterStore";
+<script setup="ts">
+import { ref, onMounted } from "vue";
+import { useAsyncData } from "../composables/asyncData";
+const res = ref("init");
 
-export default defineComponent({
-    asyncData: ({ pinia }) => {
-        useCounterStore(pinia).loadTest();
-    },
-    setup() {
-        const counterStore = useCounterStore();
-        const counter = computed(() => counterStore.counter);
-
-        console.log("counter", counter.value);
-        return {
-            counter,
-        };
-    },
+onMounted(() => {
+    console.log("MOUNTED", res.value);
 });
+
+const { data } = await useAsyncData("test", () => {
+    console.log("FETCH DATA");
+    return fetch("https://jsonplaceholder.typicode.com/todos/1")
+        .then((response) => response.json())
+        .then((json) => {
+            console.log("FETCH RECEIVED");
+            return json;
+        });
+});
+
+console.log("data", data.value);
+res.value = data;
 </script>
 
 <style scoped>

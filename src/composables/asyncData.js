@@ -1,7 +1,7 @@
 import { ref, onServerPrefetch } from "vue";
 import { getAppInstance } from "../utils/appInstance";
 
-export const useAsyncData = async (key, handler, options = {}) => {
+export const useAsyncData = (key, handler, options = { server: true }) => {
     const asyncData = {
         data: ref(null),
     };
@@ -23,7 +23,7 @@ export const useAsyncData = async (key, handler, options = {}) => {
             }
         })
             .then((result) => {
-                asyncData.data.value = Math.random();
+                asyncData.data.value = result;
                 instance.config.initialState = asyncData.data.value;
             })
             .catch(() => {
@@ -48,5 +48,6 @@ export const useAsyncData = async (key, handler, options = {}) => {
     // TODO: add chaching
     // TODO: add server=false option
 
-    return Promise.resolve(promise).then(() => asyncData);
+    const asyncDataPromise = Promise.resolve(promise).then(() => asyncData);
+    return Object.assign(asyncDataPromise, asyncData);
 };

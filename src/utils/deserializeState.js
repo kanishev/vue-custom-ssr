@@ -1,6 +1,9 @@
 export function deserializeState(state) {
     try {
-        return JSON.parse(state || "{}");
+        if (typeof state == "string") {
+            return JSON.parse(state || "{}");
+        }
+        return state;
     } catch (error) {
         console.error("Error during state deserialization -", error, state);
         return {};

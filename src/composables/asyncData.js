@@ -10,6 +10,8 @@ export const useAsyncData = (key, handler, options = { server: true }) => {
     const instance = getAppInstance();
     const initialState = instance.config.initialState;
 
+    const isServer = import.meta.env.SSR;
+
     if (initialState) {
         asyncData.data.value = initialState;
     }
@@ -36,17 +38,18 @@ export const useAsyncData = (key, handler, options = { server: true }) => {
 
     const initialFetch = () => asyncData.refresh();
 
-    if (import.meta.env.SSR) {
+    const fetchOnServer = options.server !== false;
+
+    if (isServer && fetchOnServer) {
         const promise = initialFetch();
         if (instance) {
             onServerPrefetch(() => promise);
-        } else {
-            await promise;
         }
     }
 
-    // TODO: add chaching
-    // TODO: add server=false option
+    if (!isServer && !fetchOnServer) {
+        initialFetch();
+    }
 
     const asyncDataPromise = Promise.resolve(promise).then(() => asyncData);
     return Object.assign(asyncDataPromise, asyncData);

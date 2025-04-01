@@ -4,10 +4,13 @@ import {
     getMatchedComponents,
     callAsyncData,
     renderPreloadLinks,
+    formSSRInstanceProperties,
 } from "./ssr/utils.js";
 
 export async function render(url, manifest) {
     const { app, router, pinia } = createApp();
+
+    formSSRInstanceProperties(app);
 
     await router.push(url);
     await router.isReady();

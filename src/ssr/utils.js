@@ -1,4 +1,5 @@
 import { basename } from "node:path";
+import { getAppInstance } from "../utils/appInstance";
 
 export function getMatchedComponents(matched) {
     return matched.map((m) => Object.values(m.components)).flat();
@@ -59,4 +60,8 @@ function renderPreloadLink(file) {
     } else {
         return "";
     }
+}
+
+export function formSSRInstanceProperties(app) {
+    app.config.initialState = {};
 }

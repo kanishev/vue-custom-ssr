@@ -12,8 +12,8 @@ export const useAsyncData = (key, handler, options = { server: true }) => {
 
     const isServer = import.meta.env.SSR;
 
-    if (initialState) {
-        asyncData.data.value = initialState;
+    if (key in initialState) {
+        asyncData.data.value = initialState[key];
     }
 
     asyncData.refresh = () => {
@@ -26,7 +26,7 @@ export const useAsyncData = (key, handler, options = { server: true }) => {
         })
             .then((result) => {
                 asyncData.data.value = result;
-                instance.config.initialState = asyncData.data.value;
+                instance.config.initialState[key] = asyncData.data.value;
             })
             .catch(() => {
                 asyncData.data.value = false;

@@ -1,11 +1,6 @@
 import { renderToString } from "vue/server-renderer";
 import { createApp } from "./main.js";
-import {
-    getMatchedComponents,
-    callAsyncData,
-    renderPreloadLinks,
-    formSSRInstanceProperties,
-} from "./ssr/utils.js";
+import { renderPreloadLinks, formSSRInstanceProperties } from "./ssr/utils.js";
 
 export async function render(url, manifest) {
     const { app, router, pinia } = createApp();
@@ -15,15 +10,7 @@ export async function render(url, manifest) {
     await router.push(url);
     await router.isReady();
 
-    const context = {
-        pinia,
-        router,
-    };
-
-    const components = getMatchedComponents(router.currentRoute.value.matched);
-    await callAsyncData(components, context);
-
-    const ctx = {};
+    const ctx = { pinia, router };
     const html = await renderToString(app, ctx);
 
     // get initial state from app context after data loaded on server side

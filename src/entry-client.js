@@ -6,6 +6,7 @@ const { app, router } = createApp();
 
 const context = getContext();
 app.config.initialState = context.initialState;
+app.config.globalState = context.globalState;
 
 await router.isReady();
 

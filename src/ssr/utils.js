@@ -47,4 +47,5 @@ function renderPreloadLink(file) {
 
 export function formSSRInstanceProperties(app) {
     app.config.initialState = {};
+    app.config.globalState = {};
 }

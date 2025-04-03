@@ -15,8 +15,9 @@ export async function render(url, manifest) {
 
     // get initial state from app context after data loaded on server side
     const initialState = JSON.stringify(app.config.initialState);
+    const globalState = JSON.stringify(app.config.globalState);
 
     const preloadLinks = renderPreloadLinks(ctx.modules, manifest);
 
-    return { html, initialState, preloadLinks };
+    return { html, initialState, globalState, preloadLinks };
 }

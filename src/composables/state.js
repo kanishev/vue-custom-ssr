@@ -1,7 +1,15 @@
 import { isRef, toRef } from "vue";
 import { getAppInstance } from "../utils/appInstance";
 
-export function useState(key, init = null) {
+export function useState(key, init = undefined) {
+    if (!key || typeof key !== "string") {
+        throw new TypeError("[useState] key must be a string: " + _key);
+    }
+
+    if (init !== undefined && typeof init !== "function") {
+        throw new Error("[useState] init property must be a function: " + init);
+    }
+
     const instance = getAppInstance();
     const state = toRef(instance.config.globalState, key);
 
@@ -16,6 +24,5 @@ export function useState(key, init = null) {
         state.value = initialValue;
     }
 
-    // TODO: add init fn guards
     return state;
 }

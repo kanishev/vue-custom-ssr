@@ -59,8 +59,13 @@ async function createServer() {
                 render = (await import("./dist/server/entry-server.js")).render;
             }
 
-            const { html, preloadLinks, initialState, globalState } =
-                await render(url, manifest);
+            const {
+                html,
+                preloadLinks,
+                initialState,
+                globalState,
+                piniaState,
+            } = await render(url, manifest);
 
             const renderHtml = template
                 .replace(`<!--preload-links-->`, preloadLinks)
@@ -72,6 +77,10 @@ async function createServer() {
                 .replace(
                     "window.__globalState__ = {};",
                     `window.__globalState__ = ${globalState};`
+                )
+                .replace(
+                    "window.__piniaState__ = {};",
+                    `window.__piniaState__ = ${piniaState};`
                 );
 
             res.status(200)

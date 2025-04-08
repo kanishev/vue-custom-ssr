@@ -13,11 +13,11 @@ export async function render(url, manifest) {
     const ctx = { pinia, router };
     const html = await renderToString(app, ctx);
 
-    // get initial state from app context after data loaded on server side
     const initialState = JSON.stringify(app.config.initialState);
     const globalState = JSON.stringify(app.config.globalState);
+    const piniaState = JSON.stringify(pinia.state.value);
 
     const preloadLinks = renderPreloadLinks(ctx.modules, manifest);
 
-    return { html, initialState, globalState, preloadLinks };
+    return { html, initialState, piniaState, globalState, preloadLinks };
 }

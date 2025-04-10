@@ -1,26 +1,22 @@
 <template>
-    <template v-if="false">
-        <div class="router-links">
-            <router-link to="/">Home</router-link>
-            <router-link to="/about">About</router-link>
-        </div>
-
-        <button class="btn inter" @click="counter++">
-            Counter: {{ counter }}
-        </button>
-
-        <h2>Store info: {{ counterStore.counter }}</h2>
-        <button @click="counterStore.increment">store increment</button>
-    </template>
+    <div class="router-links">
+        <router-link to="/">Home</router-link>
+        <router-link to="/about">About</router-link>
+    </div>
 
     <RouterView v-slot="{ Component }">
         <Suspense>
             <component :is="Component" />
         </Suspense>
     </RouterView>
+
+    COUNTER {{ counter }}
 </template>
 
-<script setup></script>
+<script setup>
+import { useState } from "./composables/state.ts";
+const counter = useState("counter", () => 100500);
+</script>
 
 <style>
 @font-face {

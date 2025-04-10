@@ -5,21 +5,27 @@ interface AsyncDataOptions {
     server?: boolean;
 }
 
-interface IAsyncData<DataT> {
-    data: Ref<DataT>;
+interface IAsyncData<DataT, ErrorT> {
+    data: Ref<DataT | null>;
+    error: Ref<ErrorT | null>;
     refresh: () => Promise<void>;
 }
 
-type AsyncData<T> = IAsyncData<T> & Promise<IAsyncData<T>>;
+type AsyncData<T, E> = IAsyncData<T, E> & Promise<IAsyncData<T, E>>;
 
-export function useAsyncData<T>(
+export function useAsyncData<DataT, ErrorT = unknown>(
     key: string,
-    handler: () => Promise<T>,
+    handler: () => Promise<DataT>,
     options: AsyncDataOptions = { server: true }
-): AsyncData<T> {
-    const asyncData = { data: ref(null) } as AsyncData<T>;
+): AsyncData<DataT, ErrorT> {
+    const asyncData: IAsyncData<DataT, ErrorT> = {
+        data: ref(null),
+        error: ref(null),
+        refresh: async () => {},
+    };
 
-    let promise;
+    asyncData.data;
+
     const instance = getAppInstance();
     const initialState = instance.config.initialState;
 
@@ -29,8 +35,10 @@ export function useAsyncData<T>(
         asyncData.data.value = initialState[key];
     }
 
+    let promise;
+
     asyncData.refresh = () => {
-        const p = new Promise<T>((resolve, reject) => {
+        const p = new Promise<DataT>((resolve, reject) => {
             try {
                 resolve(handler());
             } catch (error) {
@@ -39,10 +47,12 @@ export function useAsyncData<T>(
         })
             .then((result) => {
                 asyncData.data.value = result;
+                asyncData.error.value = null;
                 instance.config.initialState[key] = asyncData.data.value;
             })
             .catch((error) => {
-                asyncData.data.value = error?.message;
+                asyncData.data.value = null;
+                asyncData.error.value = error?.message;
             });
 
         promise = p;
@@ -65,6 +75,5 @@ export function useAsyncData<T>(
     }
 
     const asyncDataPromise = Promise.resolve(promise).then(() => asyncData);
-
-    return Object.assign(asyncDataPromise, asyncData);
+    return Object.assign(asyncDataPromise, asyncData) as AsyncData<DataT, ErrorT>;
 }

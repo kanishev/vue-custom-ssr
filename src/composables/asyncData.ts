@@ -8,6 +8,7 @@ interface AsyncDataOptions {
 interface IAsyncData<DataT, ErrorT> {
     data: Ref<DataT | null>;
     error: Ref<ErrorT | null>;
+    loading: Ref<boolean>;
     refresh: () => Promise<void>;
 }
 
@@ -21,6 +22,7 @@ export function useAsyncData<DataT, ErrorT = unknown>(
     const asyncData: IAsyncData<DataT, ErrorT> = {
         data: ref(null),
         error: ref(null),
+        loading: ref(false),
         refresh: async () => {},
     };
 
@@ -38,6 +40,8 @@ export function useAsyncData<DataT, ErrorT = unknown>(
     let promise;
 
     asyncData.refresh = () => {
+        asyncData.loading.value = true;
+
         const p = new Promise<DataT>((resolve, reject) => {
             try {
                 resolve(handler());
@@ -52,7 +56,10 @@ export function useAsyncData<DataT, ErrorT = unknown>(
             })
             .catch((error) => {
                 asyncData.data.value = null;
-                asyncData.error.value = error?.message;
+                asyncData.error.value = error?.message ?? (error as ErrorT);
+            })
+            .finally(() => {
+                asyncData.loading.value = false;
             });
 
         promise = p;

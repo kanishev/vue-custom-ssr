@@ -1,12 +1,13 @@
 import { createApp } from "./main.js";
-import { getContext } from "./utils/context.js";
+import { getContext } from "./utils/context.ts";
+import { formClientInstanceProperties } from "./utils/appInstance.ts";
 import "./style.css";
 
 const { app, router, pinia } = createApp();
 
 const context = getContext();
-app.config.initialState = context.initialState;
-app.config.globalState = context.globalState;
+
+formClientInstanceProperties(app, context);
 pinia.state.value = context.piniaState;
 
 await router.isReady();

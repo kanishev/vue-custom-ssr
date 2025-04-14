@@ -1,5 +1,5 @@
 import { isRef, Ref, toRef } from "vue";
-import { getAppInstance } from "../utils/appInstance";
+import { getAppInstance } from "../utils/appInstance.ts";
 import { toArray } from "../utils/array";
 
 export function useState<T>(key: string, init?: () => T | Ref<T>): Ref<T> {
@@ -38,11 +38,7 @@ export function clearState(keys?: string | string[]): void {
 
     const stateKeys = Object.keys(instance.config.globalState);
 
-    const keysToIterate = !keys
-        ? stateKeys
-        : typeof keys === "string"
-        ? toArray(keys)
-        : keys;
+    const keysToIterate = !keys ? stateKeys : typeof keys === "string" ? toArray(keys) : keys;
 
     for (let key of keysToIterate) {
         instance.config.globalState[key] = undefined;

@@ -1,5 +1,5 @@
 import { ref, Ref, onServerPrefetch } from "vue";
-import { getAppInstance } from "../utils/appInstance";
+import { getAppInstance } from "../utils/appInstance.ts";
 
 interface AsyncDataOptions {
     server?: boolean;

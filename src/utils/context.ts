@@ -1,4 +1,4 @@
-import { deserializeState } from "./deserializeState";
+import { deserializeState } from "./deserializeState.ts";
 
 export function getContext() {
     const initialState = deserializeState(window.__initialState__);

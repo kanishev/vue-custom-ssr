@@ -1,6 +1,6 @@
 import { basename } from "node:path";
 
-export function renderPreloadLinks(modules, manifest) {
+export function renderPreloadLinks(modules, manifest): string {
     let links = "";
     const seen = new Set();
 
@@ -25,7 +25,7 @@ export function renderPreloadLinks(modules, manifest) {
     return links;
 }
 
-function renderPreloadLink(file) {
+function renderPreloadLink(file): string {
     if (file.endsWith(".js")) {
         return `<link rel="modulepreload" crossorigin href="${file}">`;
     } else if (file.endsWith(".css")) {

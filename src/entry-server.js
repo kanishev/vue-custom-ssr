@@ -1,6 +1,6 @@
 import { renderToString } from "vue/server-renderer";
 import { createApp } from "./main.js";
-import { renderPreloadLinks, formSSRInstanceProperties } from "./ssr/utils.js";
+import { renderPreloadLinks, formSSRInstanceProperties } from "./utils/ssr.ts";
 
 export async function render(url, manifest) {
     const { app, router, pinia } = createApp();
